@@ -1,5 +1,5 @@
 // Garde l'appli (pas les données) pour qu'elle s'ouvre sans réseau. Ne touche jamais aux adresses externes.
-const CACHE = "mp-tel-v5";
+const CACHE = "mp-tel-v6";
 const SHELL = ["./", "index.html", "app.css", "app.js", "manifest.webmanifest", "icon-192.png", "icon-180.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => {
