@@ -114,7 +114,7 @@ async function tokenCall(params) {
 async function downloadBlob(accessToken) {
   const r = await fetch("https://content.dropboxapi.com/2/files/download", { method: "POST", credentials: "omit", referrerPolicy: "no-referrer",
     headers: { Authorization: "Bearer " + accessToken, "Dropbox-API-Arg": JSON.stringify({ path: "/patrimoine.enc" }) } });
-  if (r.status === 409) { const d = (await r.text().catch(() => "")).slice(0, 140); let ls = ""; try { const q = await fetch("https://api.dropboxapi.com/2/files/list_folder", { method: "POST", credentials: "omit", referrerPolicy: "no-referrer", headers: { Authorization: "Bearer " + accessToken, "Content-Type": "application/json" }, body: JSON.stringify({ path: "", limit: 20 }) }); const qj = await q.json(); ls = q.ok ? " Contenu: " + (qj.entries.map(x => x.name).join(", ") || "vide") : " Liste: " + JSON.stringify(qj).slice(0, 100); } catch (e) { ls = " Liste impossible"; } throw new Error("Introuvable (" + d.slice(0, 60) + ")." + ls); }
+  if (r.status === 409) { const d = (await r.text().catch(() => "")).slice(0, 140); let ls = ""; try { const q = await fetch("https://api.dropboxapi.com/2/files/list_folder", { method: "POST", credentials: "omit", referrerPolicy: "no-referrer", headers: { Authorization: "Bearer " + accessToken, "Content-Type": "application/json" }, body: JSON.stringify({ path: "", limit: 20 }) }); let em = ""; try { const ac = await fetch("https://api.dropboxapi.com/2/users/get_current_account", { method: "POST", credentials: "omit", referrerPolicy: "no-referrer", headers: { Authorization: "Bearer " + accessToken } }); const aj = await ac.json(); em = " Compte: " + (aj.email || JSON.stringify(aj).slice(0, 60)) + "."; } catch (e) {} const qj = await q.json();  ls = q.ok ? em + " Contenu: " + (qj.entries.map(x => x.name).join(", ") || "vide") : " Liste: " + JSON.stringify(qj).slice(0, 100); } catch (e) { ls = " Liste impossible"; } throw new Error("Introuvable (" + d.slice(0, 60) + ")." + ls); }
   if (!r.ok) throw new Error("Dropbox : erreur " + r.status);
   const t = await r.text();
   if (t.length > 3_000_000) throw new Error("fichier trop gros");
@@ -177,7 +177,7 @@ async function setupSubmit() {
   if (pass.length < 16) { toast("Phrase de passe trop courte (16 caractères minimum)."); return; }
   if (!S.setup.url) {
     const p = await pkce();
-    S.setup = { appkey, ver: p.v, pass, url: `https://www.dropbox.com/oauth2/authorize?client_id=${encodeURIComponent(appkey)}&response_type=code&code_challenge=${p.ch}&code_challenge_method=S256&token_access_type=offline&scope=files.content.read%20files.metadata.read` };
+    S.setup = { appkey, ver: p.v, pass, url: `https://www.dropbox.com/oauth2/authorize?client_id=${encodeURIComponent(appkey)}&response_type=code&code_challenge=${p.ch}&code_challenge_method=S256&token_access_type=offline&scope=files.content.read%20files.metadata.read%20account_info.read` };
     await kv.set("pkce", { appkey, ver: p.v, url: S.setup.url });
     screenSetup(); $("#sPass").value = pass; return;
   }
