@@ -331,5 +331,5 @@ document.addEventListener("submit", e => {
   if ("serviceWorker" in navigator) { try { await navigator.serviceWorker.register("sw.js"); } catch (e) { /* hors ligne non garanti */ } }
   const blob = await kv.get("blob");
   if (blob) screenLock();
-  else { const p = await kv.get("pkce"); if (p) S.setup = { ...p }; screenSetup(); }
+  else { S.setup = null; try { await kv.set("pkce", null); } catch (e) {} screenSetup(); }
 })();
