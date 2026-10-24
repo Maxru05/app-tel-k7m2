@@ -164,7 +164,7 @@ function screenSetup(step) {
   show(`<div class="page"><div><div class="eyebrow">Première ouverture</div><h1>Mon patrimoine</h1></div>
     <div class="note">Cette appli lit une copie chiffrée de tes chiffres dans ton Dropbox. Rien d'autre n'est envoyé nulle part. Il te faut la clé de ton appli Dropbox et la phrase de passe choisie sur le PC.</div>
     <form class="card" id="setupForm" autocomplete="on">
-      <label class="field">Clé de l'appli Dropbox<input id="sKey" type="text" name="dbx-app-id" autocomplete="off" data-lpignore="true" data-1p-ignore="true" autocapitalize="off" autocorrect="off" spellcheck="false" value="${esc(S.setup.appkey)}" required></label>
+      <p class="muted">Clé Dropbox intégrée à l'appli.</p>
       <input class="sr" type="text" name="username" autocomplete="username" value="MonPatrimoine" tabindex="-1" aria-hidden="true">
       <label class="field">Phrase de passe<input id="sPass" type="password" name="password" autocomplete="new-password" autocapitalize="off" required></label>
       ${S.setup.url ? `<a class="btn primary btnlink" href="${esc(S.setup.url)}" target="_blank" rel="noopener noreferrer">1. Autoriser dans Dropbox</a>
@@ -173,7 +173,7 @@ function screenSetup(step) {
     </form></div>`);
 }
 async function setupSubmit() {
-  const appkey = $("#sKey").value.trim(), pass = $("#sPass").value;
+  const appkey = "kg69yxxh9yua5rm", pass = $("#sPass").value;
   if (pass.length < 16) { toast("Phrase de passe trop courte (16 caractères minimum)."); return; }
   if (!S.setup.url) {
     const p = await pkce();
@@ -331,5 +331,5 @@ document.addEventListener("submit", e => {
   if ("serviceWorker" in navigator) { try { await navigator.serviceWorker.register("sw.js"); } catch (e) { /* hors ligne non garanti */ } }
   const blob = await kv.get("blob");
   if (blob) screenLock();
-  else { S.setup = null; try { await kv.set("pkce", null); } catch (e) {} screenSetup(); }
+  else { const p = await kv.get("pkce"); if (p) S.setup = { ...p }; screenSetup(); }
 })();
