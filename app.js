@@ -160,11 +160,11 @@ async function syncNow(manual) {
 
 /* ---------- écrans : première configuration ---------- */
 function screenSetup(step) {
-  S.setup = S.setup || { appkey: "", ver: "" };
+  S.setup = S.setup || { appkey: "kg69yxxh9yua5rm", ver: "" };
   show(`<div class="page"><div><div class="eyebrow">Première ouverture</div><h1>Mon patrimoine</h1></div>
     <div class="note">Cette appli lit une copie chiffrée de tes chiffres dans ton Dropbox. Rien d'autre n'est envoyé nulle part. Il te faut la clé de ton appli Dropbox et la phrase de passe choisie sur le PC.</div>
     <form class="card" id="setupForm" autocomplete="on">
-      <label class="field">Clé de l'appli Dropbox<input id="sKey" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" value="${esc(S.setup.appkey)}" required></label>
+      <label class="field">Clé de l'appli Dropbox<input id="sKey" type="text" name="dbx-app-id" autocomplete="off" data-lpignore="true" data-1p-ignore="true" autocapitalize="off" autocorrect="off" spellcheck="false" value="${esc(S.setup.appkey)}" required></label>
       <input class="sr" type="text" name="username" autocomplete="username" value="MonPatrimoine" tabindex="-1" aria-hidden="true">
       <label class="field">Phrase de passe<input id="sPass" type="password" name="password" autocomplete="new-password" autocapitalize="off" required></label>
       ${S.setup.url ? `<a class="btn primary btnlink" href="${esc(S.setup.url)}" target="_blank" rel="noopener noreferrer">1. Autoriser dans Dropbox</a>
