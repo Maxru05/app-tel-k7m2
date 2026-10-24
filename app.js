@@ -114,7 +114,7 @@ async function tokenCall(params) {
 async function downloadBlob(accessToken) {
   const r = await fetch("https://content.dropboxapi.com/2/files/download", { method: "POST", credentials: "omit", referrerPolicy: "no-referrer",
     headers: { Authorization: "Bearer " + accessToken, "Dropbox-API-Arg": JSON.stringify({ path: "/patrimoine.enc" }) } });
-  if (r.status === 409) throw new Error("Fichier introuvable dans Dropbox. Ouvre l'appli sur ton PC une fois.");
+  if (r.status === 409) { const d = (await r.text().catch(() => "")).slice(0, 140); throw new Error("Fichier introuvable dans Dropbox (" + d + "). Ouvre l'appli sur ton PC une fois."); }
   if (!r.ok) throw new Error("Dropbox : erreur " + r.status);
   const t = await r.text();
   if (t.length > 3_000_000) throw new Error("fichier trop gros");
